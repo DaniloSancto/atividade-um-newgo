@@ -15,7 +15,7 @@ public class Program {
 		Scanner sc = new Scanner(System.in);
 
 		String path = "C:\\Dados dos Sócios";
-		
+
 		Club club = new Club();
 
 		boolean createFile = new File(path).mkdir();
@@ -32,8 +32,8 @@ public class Program {
 					+ "4- Atualizar um registro por número de carteirinha\n"
 					+ "5- Excluir registro por número de carteirinha\n"
 					+ "6- Finalizar execução\n");
-			
-			switch(sc.nextInt()) {
+
+			switch (sc.nextInt()) {
 			case 1:
 				System.out.print("Digite o numero da carteirinha: ");
 				Long number = sc.nextLong();
@@ -44,20 +44,20 @@ public class Program {
 				DocumentType docType = DocumentType.valueOf(sc.next().toUpperCase());
 				System.out.print("Digite o numero do " + docType.name() + "(somente números): ");
 				Long documentNumber = sc.nextLong();
-				
+
 				Document<DocumentType, Long> document = new Document<>(docType, documentNumber);
 				Member member = new Member(number, name, new Date(), document);
-				
-				club.getMembers().add(member);
-				
+
+				club.insertMember(member);
+
 				System.out.println("\n" + club.getMembers());
 				break;
-				
+
 			case 6:
 				running = false;
 				break;
 			}
-			
+
 		}
 
 		sc.close();

@@ -58,7 +58,7 @@ public class Member {
 
 	@Override
 	public String toString() {
-		return "\nn° Carteirinha: " + cardNumber + ", Nome: " + name + ", Data: " + sdf.format(date) + ", Documento: " + document;
+		return cardNumber + "," + name + "," + sdf.format(date) + "," + document;
 	}
 
 }
