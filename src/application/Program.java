@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Date;
 import java.util.Scanner;
 
+import entities.Club;
 import entities.Document;
 import entities.Member;
 import enums.DocumentType;
@@ -14,6 +15,8 @@ public class Program {
 		Scanner sc = new Scanner(System.in);
 
 		String path = "C:\\Dados dos Sócios";
+		
+		Club club = new Club();
 
 		boolean createFile = new File(path).mkdir();
 
@@ -41,14 +44,16 @@ public class Program {
 				DocumentType docType = DocumentType.valueOf(sc.next().toUpperCase());
 				System.out.print("Digite o numero do " + docType.name() + "(somente números): ");
 				Long documentNumber = sc.nextLong();
-				Document<DocumentType, Long> document = new Document<>(docType, documentNumber);
 				
+				Document<DocumentType, Long> document = new Document<>(docType, documentNumber);
 				Member member = new Member(number, name, new Date(), document);
 				
-				System.out.println("\n" + member);
+				club.getMembers().add(member);
+				
+				System.out.println("\n" + club.getMembers());
 				break;
 				
-			case 6: 
+			case 6:
 				running = false;
 				break;
 			}

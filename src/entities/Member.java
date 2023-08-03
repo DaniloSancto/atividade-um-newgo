@@ -1,12 +1,15 @@
 package entities;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import enums.DocumentType;
 
 public class Member {
 
-	private Long number;
+	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+	
+	private Long cardNumber;
 	private String name;
 	private Date date;
 	private Document<DocumentType, Long> document;
@@ -14,8 +17,8 @@ public class Member {
 	public Member() {
 	}
 
-	public Member(Long number, String name, Date date, Document<DocumentType, Long> document) {
-		this.number = number;
+	public Member(Long cardNumber, String name, Date date, Document<DocumentType, Long> document) {
+		this.cardNumber = cardNumber;
 		this.name = name;
 		this.date = date;
 		this.document = document;
@@ -29,12 +32,12 @@ public class Member {
 		this.name = name;
 	}
 
-	public Long getNumber() {
-		return number;
+	public Long getCardNumber() {
+		return cardNumber;
 	}
 
-	public void setNumber(Long number) {
-		this.number = number;
+	public void setCardNumber(Long cardNumber) {
+		this.cardNumber = cardNumber;
 	}
 
 	public Date getDate() {
@@ -55,7 +58,7 @@ public class Member {
 
 	@Override
 	public String toString() {
-		return "n° Carteirinha: " + number + "\nNome: " + name + "\nData: " + date + "\nDocumento: " + document;
+		return "\nn° Carteirinha: " + cardNumber + ", Nome: " + name + ", Data: " + sdf.format(date) + ", Documento: " + document;
 	}
 
 }
