@@ -47,7 +47,13 @@ public class Club {
 	}
 
 	public Member findByName(String name) {
-		return new Member();
+		for (Member entity : members) {
+			System.out.println(entity.getName());			
+			if(entity.getName().equalsIgnoreCase(name)) {
+				return entity;
+			}
+		}
+		return null;
 	}
 
 	public void updateMemberByCardNumber(Long cardNumber, Member member) {

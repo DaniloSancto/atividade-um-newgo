@@ -79,7 +79,10 @@ public class Program {
 				break;
 				
 			case 3:
-				running = false;
+				System.out.print("Digite o nome do Sócio: ");
+				sc.nextLine();
+				name = sc.nextLine();
+				System.out.println(club.findByName(name));
 				break;
 				
 			case 4:
