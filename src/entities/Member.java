@@ -12,12 +12,12 @@ public class Member {
 	private Long cardNumber;
 	private String name;
 	private Date date;
-	private Document<DocumentType, Long> document;
+	private Document<DocumentType, String> document;
 
 	public Member() {
 	}
 
-	public Member(Long cardNumber, String name, Date date, Document<DocumentType, Long> document) {
+	public Member(Long cardNumber, String name, Date date, Document<DocumentType, String> document) {
 		this.cardNumber = cardNumber;
 		this.name = name;
 		this.date = date;
@@ -48,11 +48,11 @@ public class Member {
 		this.date = date;
 	}
 
-	public Document<DocumentType, Long> getDocument() {
+	public Document<DocumentType, String> getDocument() {
 		return document;
 	}
 
-	public void setDocument(Document<DocumentType, Long> document) {
+	public void setDocument(Document<DocumentType, String> document) {
 		this.document = document;
 	}
 
