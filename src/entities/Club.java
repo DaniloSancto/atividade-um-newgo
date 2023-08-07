@@ -14,7 +14,7 @@ import java.util.List;
 import enums.DocumentType;
 
 public class Club {
-	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+	private SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
 	private List<Member> members = new ArrayList<>();
 
@@ -27,10 +27,7 @@ public class Club {
 	public void insertMember(Member member) {
 		members.add(member);
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH, true))) {
-			for (Member obj : members) {
-				writer.write(obj.getCardNumber() + "," + obj.getName() + "," + sdf.format(obj.getDate()) + ","
-						+ obj.getDocument().getKey() + "-" + obj.getDocument().getValue() + "\n");
-			}
+			writer.write(member + "\n");
 		} catch (IOException e) {
 			System.out.println("Error writing file: " + e.getMessage());
 		}
@@ -48,20 +45,34 @@ public class Club {
 
 	public Member findByName(String name) {
 		for (Member entity : members) {
-			System.out.println(entity.getName());			
-			if(entity.getName().equalsIgnoreCase(name)) {
+			if (entity.getName().equalsIgnoreCase(name)) {
 				return entity;
 			}
 		}
 		return null;
 	}
 
-	public void updateMemberByCardNumber(Long cardNumber, Member member) {
+	public void updateMemberByCardNumber(String cardNumber, Member member) {
+		int count = 0;
+		for (Member entity : members) {
+			if (entity.getCardNumber().equals(cardNumber)) {
+				members.set(count, member);
+			}
+			count++;
+		}
 
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
+
+			for (Member entity : members) {
+				writer.write(entity + "\n");
+			}
+		} catch (IOException e) {
+			System.out.println("Error writing file: " + e.getMessage());
+		}
 	}
 
-	public void deleteMemberByCardNumber(Long cardNumber) {
-
+	public void deleteMemberByCardNumber(String cardNumber) {
+		
 	}
 
 	public List<Member> getMembers() {
@@ -90,9 +101,9 @@ public class Club {
 	}
 
 	private Member getMemberFromStringSplit(String[] fields) throws ParseException {
-		Long cardNumber = Long.parseLong(fields[0]);
+		String cardNumber = fields[0];
 		String name = fields[1];
-		Date date = sdf.parse(fields[2]);
+		Date date = dateFormat.parse(fields[2]);
 		DocumentType docType;
 		String documentValue;
 

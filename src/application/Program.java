@@ -34,10 +34,10 @@ public class Program {
 		System.out.println(createFolder ? "Pasta criada no caminho 'C:/Dados dos Sócios'"
 				: "Pasta já existente no caminho 'C:/Dados dos Sócios'");
 
-		System.out.println(club.getMembers());
 		
 		boolean running = true;
 		while (running) {
+			System.out.println("\n" + club.getMembers());
 			System.out.println("\nSELECIONE ALGUMA OPÇÃO\n\n"
 					+ "1- Cadastrar novos sócios\n"
 					+ "2- Consultar por documento\n"
@@ -49,7 +49,7 @@ public class Program {
 			switch (sc.nextInt()) {
 			case 1:
 				System.out.print("Digite o numero da carteirinha: ");
-				Long number = sc.nextLong();
+				String cardNumber = sc.next();
 				System.out.print("Digite o nome do Sócio: ");
 				sc.nextLine();
 				String name = sc.nextLine();
@@ -58,16 +58,10 @@ public class Program {
 				System.out.print("Digite o numero do " + docType.name() + "(somente números): ");
 				String docValue = sc.next();
 				
-				Date date = new Date();
-				Member member = new Member(number, name, date, new Document<>(docType, docValue));
+				Member member = new Member(cardNumber, name, new Date(), new Document<>(docType, docValue));
 
 				club.insertMember(member);
-
-				System.out.println(
-						member.getCardNumber() + 
-						", " + member.getName() + 
-						", " + member.getDate() +
-						", " + member.getDocument());
+				System.out.println("\n" + member);
 				break;
 				
 			case 2:
@@ -86,7 +80,20 @@ public class Program {
 				break;
 				
 			case 4:
-				running = false;
+				System.out.print("Digite o numero da carteirinha: ");
+				cardNumber = sc.next();
+				System.out.print("Digite o novo nome do Sócio: ");
+				sc.nextLine();
+				name = sc.nextLine();
+				System.out.print("Digite o tipo de documento(RG/CPF): ");
+				docType = DocumentType.valueOf(sc.next().toUpperCase());
+				System.out.print("Digite o numero do " + docType.name() + "(somente números): ");
+				docValue = sc.next();
+				
+				Member updatedMember = new Member(cardNumber, name, new Date(), new Document<>(docType, docValue));
+				
+				club.updateMemberByCardNumber(cardNumber, updatedMember);
+				
 				break;
 				
 			case 5:
@@ -97,9 +104,9 @@ public class Program {
 				running = false;
 				break;
 				
-				default:
-					System.out.println("*Valor inválido*");
-					break;
+			default:
+				System.out.println("*Valor inválido*");
+				break;
 			}
 
 		}

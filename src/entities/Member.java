@@ -7,9 +7,9 @@ import enums.DocumentType;
 
 public class Member {
 
-	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+	private SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 	
-	private Long cardNumber;
+	private String cardNumber;
 	private String name;
 	private Date date;
 	private Document<DocumentType, String> document;
@@ -17,7 +17,7 @@ public class Member {
 	public Member() {
 	}
 
-	public Member(Long cardNumber, String name, Date date, Document<DocumentType, String> document) {
+	public Member(String cardNumber, String name, Date date, Document<DocumentType, String> document) {
 		this.cardNumber = cardNumber;
 		this.name = name;
 		this.date = date;
@@ -32,11 +32,11 @@ public class Member {
 		this.name = name;
 	}
 
-	public Long getCardNumber() {
+	public String getCardNumber() {
 		return cardNumber;
 	}
 
-	public void setCardNumber(Long cardNumber) {
+	public void setCardNumber(String cardNumber) {
 		this.cardNumber = cardNumber;
 	}
 
@@ -58,7 +58,7 @@ public class Member {
 
 	@Override
 	public String toString() {
-		return cardNumber + "," + name + "," + sdf.format(date) + "," + document;
+		return cardNumber + "," + name + "," + dateFormat.format(date) + "," + document;
 	}
 
 }
