@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import enums.DocumentType;
 
@@ -72,7 +73,23 @@ public class Club {
 	}
 
 	public void deleteMemberByCardNumber(String cardNumber) {
-		
+		Member entity = new Member();
+		for (Member member : members) {
+			if (member.getCardNumber().equals(cardNumber)) {
+				entity = member;
+			}
+		}
+		System.out.println(entity);
+		members.remove(entity);
+
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
+
+			for (Member member : members) {
+				writer.write(member + "\n");
+			}
+		} catch (IOException e) {
+			System.out.println("Error writing file: " + e.getMessage());
+		}
 	}
 
 	public List<Member> getMembers() {
@@ -118,4 +135,18 @@ public class Club {
 		return new Member(cardNumber, name, date, new Document<DocumentType, String>(docType, documentValue));
 	}
 
+	public String generateRandomCardNumber() {
+		final String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+		final int cardLength = 5;
+		Random random = new Random();
+		StringBuilder sb = new StringBuilder(cardLength);
+
+		for (int i = 0; i < cardLength; i++) {
+			int randomIndex = random.nextInt(characters.length());
+			char randomChar = characters.charAt(randomIndex);
+			sb.append(randomChar);
+		}
+
+		return sb.toString();
+	}
 }
