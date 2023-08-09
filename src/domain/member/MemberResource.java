@@ -1,4 +1,4 @@
-package entities;
+package domain.member;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -10,33 +10,32 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
-import enums.DocumentType;
+import data.Member;
+import data.document.CPF;
+import data.document.Document;
+import data.document.RG;
+import data.util.Routes;
 
-public class Club {
+public class MemberResource {
 	private SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
 	private List<Member> members = new ArrayList<>();
 
-	public static final String FOLDER_PATH = "C:\\Dados dos Sócios";
-	public static final String FILE_PATH = FOLDER_PATH + "\\registro de sócios.txt";
-
-	public Club() {
-	}
-
-	public void insertMember(Member member) {
+	public boolean insertMember(Member member) {
 		members.add(member);
-		try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH, true))) {
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter(Routes.MEMBER_FILE_PATH, true))) {
 			writer.write(member + "\n");
+			return true;
 		} catch (IOException e) {
 			System.out.println("Error writing file: " + e.getMessage());
 		}
+		return false;
 	}
 
-	public Member findByDocument(Document<DocumentType, String> document) {
+	public Member findByDocument(Document document) {
 		for (Member entity : members) {
-			if (entity.getDocument().getKey().equals(document.getKey())
+			if (entity.getDocument().getType().equals(document.getType())
 					&& entity.getDocument().getValue().equals(document.getValue())) {
 				return entity;
 			}
@@ -62,7 +61,7 @@ public class Club {
 			count++;
 		}
 
-		try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter(Routes.MEMBER_FILE_PATH))) {
 
 			for (Member entity : members) {
 				writer.write(entity + "\n");
@@ -82,7 +81,7 @@ public class Club {
 		System.out.println(entity);
 		members.remove(entity);
 
-		try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter(Routes.MEMBER_FILE_PATH))) {
 
 			for (Member member : members) {
 				writer.write(member + "\n");
@@ -92,14 +91,10 @@ public class Club {
 		}
 	}
 
-	public List<Member> getMembers() {
-		return members;
-	}
-
 	public List<Member> getAllMembersFromDocument() {
 		List<Member> list = new ArrayList<>();
 
-		try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
+		try (BufferedReader reader = new BufferedReader(new FileReader(Routes.MEMBER_FILE_PATH))) {
 			String line = reader.readLine();
 
 			while (line != null) {
@@ -121,32 +116,17 @@ public class Club {
 		String cardNumber = fields[0];
 		String name = fields[1];
 		Date date = dateFormat.parse(fields[2]);
-		DocumentType docType;
-		String documentValue;
-
+		Document document;
 		if (fields[3].charAt(0) == 'R') {
-			docType = DocumentType.RG;
-			documentValue = fields[3].substring(3);
+			document = new RG(fields[3].substring(3));
 		} else {
-			docType = DocumentType.CPF;
-			documentValue = fields[3].substring(4);
+			document = new CPF(fields[3].substring(4));
 		}
 
-		return new Member(cardNumber, name, date, new Document<DocumentType, String>(docType, documentValue));
+		return new Member(cardNumber, name, date, document);
 	}
 
-	public String generateRandomCardNumber() {
-		final String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-		final int cardLength = 5;
-		Random random = new Random();
-		StringBuilder sb = new StringBuilder(cardLength);
-
-		for (int i = 0; i < cardLength; i++) {
-			int randomIndex = random.nextInt(characters.length());
-			char randomChar = characters.charAt(randomIndex);
-			sb.append(randomChar);
-		}
-
-		return sb.toString();
+	public List<Member> getMembers() {
+		return members;
 	}
 }

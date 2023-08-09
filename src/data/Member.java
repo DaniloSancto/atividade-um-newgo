@@ -1,9 +1,9 @@
-package entities;
+package data;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import enums.DocumentType;
+import data.document.Document;
 
 public class Member {
 
@@ -12,12 +12,12 @@ public class Member {
 	private String cardNumber;
 	private String name;
 	private Date date;
-	private Document<DocumentType, String> document;
+	private Document document;
 
 	public Member() {
 	}
 
-	public Member(String cardNumber, String name, Date date, Document<DocumentType, String> document) {
+	public Member(String cardNumber, String name, Date date, Document document) {
 		this.cardNumber = cardNumber;
 		this.name = name;
 		this.date = date;
@@ -48,11 +48,11 @@ public class Member {
 		this.date = date;
 	}
 
-	public Document<DocumentType, String> getDocument() {
+	public Document getDocument() {
 		return document;
 	}
 
-	public void setDocument(Document<DocumentType, String> document) {
+	public void setDocument(Document document) {
 		this.document = document;
 	}
 
