@@ -1,17 +1,15 @@
 package data;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import data.document.Document;
+import data.util.DateFormat;
 
 public class Member {
 
-	private SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-	
 	private String cardNumber;
 	private String name;
-	private Date date;
+	private String date;
 	private Document document;
 
 	public Member() {
@@ -20,7 +18,7 @@ public class Member {
 	public Member(String cardNumber, String name, Date date, Document document) {
 		this.cardNumber = cardNumber;
 		this.name = name;
-		this.date = date;
+		this.date = DateFormat.date.format(date);
 		this.document = document;
 	}
 
@@ -40,11 +38,11 @@ public class Member {
 		this.cardNumber = cardNumber;
 	}
 
-	public Date getDate() {
+	public String getDate() {
 		return date;
 	}
 
-	public void setDate(Date date) {
+	public void setDate(String date) {
 		this.date = date;
 	}
 
@@ -58,7 +56,6 @@ public class Member {
 
 	@Override
 	public String toString() {
-		return cardNumber + "," + name + "," + dateFormat.format(date) + "," + document;
+		return cardNumber + "," + name + "," + date + "," + document;
 	}
-
 }
