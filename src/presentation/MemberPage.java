@@ -1,38 +1,27 @@
 package presentation;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Date;
 import java.util.Scanner;
 
 import com.google.gson.Gson;
 
 import data.Member;
-import data.document.CPF;
 import data.document.Document;
-import data.document.RG;
+import data.document.enums.DocumentType;
 import data.util.ClearScreen;
 import data.util.GenerateMemberCardNumber;
-import data.util.Routes;
 import domain.member.MemberResource;
 
 public class MemberPage {
+	
 	GenerateMemberCardNumber generateCardNumber = new GenerateMemberCardNumber();
 	MemberResource memberResource = new MemberResource();
+	CreateFolderAndFiles createFolderAndFiles = new CreateFolderAndFiles();
 	
 	Gson gson = new Gson();
 	
 	public MemberPage() {
-		File file = new File(Routes.MEMBER_FILE_PATH);
-		
-		if (!file.exists()) {
-			try {
-				file.createNewFile();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		else {
+		if(!createFolderAndFiles.create()) {
 			memberResource.getMembers().addAll(memberResource.getAllMembersFromDocument());
 		}
 	}
@@ -149,10 +138,10 @@ public class MemberPage {
 		String documentValue = scanner.next();
 		Document document;
 		if (documentType.equals("RG")) {
-			document = new RG(documentValue);
+			document = new Document(DocumentType.RG, documentValue);
 		}
 		else if(documentType.equals("CPF")) {
-			document = new CPF(documentValue);
+			document = new Document(DocumentType.CPF, documentValue);
 		}
 		else {
 			return null;

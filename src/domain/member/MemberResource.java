@@ -24,6 +24,7 @@ public class MemberResource {
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter(Routes.MEMBER_FILE_PATH, true))) {
 			
 				writer.write(gson.toJson(member));
+				writer.newLine();
 			return true;
 		} catch (IOException e) {
 			System.out.println("Error writing file: " + e.getMessage());

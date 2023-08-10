@@ -1,12 +1,41 @@
 package data.document;
 
-public interface Document {
+import data.document.enums.DocumentType;
+
+public class Document {
 	
-	boolean verifyDocument();
+	private DocumentType type;
+	private String value;
 
-	String getType();
+	public Document() {
+	}
 
-	String getValue();
+	public Document(DocumentType type, String value) {
+		this.type = type;
+		this.value = value;
+	}
 
-	void setValue(String value);
+	public boolean verifyDocument() {
+		return true;
+	}
+
+	public DocumentType getType() {
+		return type;
+	}
+	
+	public void setType(DocumentType type) {
+		this.type = type;
+	}
+
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
+	}
+	
+	public String toString() {
+		return type + "-" + value;
+	}
 }
