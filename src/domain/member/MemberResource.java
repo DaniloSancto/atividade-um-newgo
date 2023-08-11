@@ -22,9 +22,9 @@ public class MemberResource {
 	public boolean insertMember(Member member) {
 		members.add(member);
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter(Routes.MEMBER_FILE_PATH, true))) {
-			
-				writer.write(gson.toJson(member));
-				writer.newLine();
+
+			writer.write(gson.toJson(member));
+			writer.newLine();
 			return true;
 		} catch (IOException e) {
 			System.out.println("Error writing file: " + e.getMessage());
@@ -42,9 +42,19 @@ public class MemberResource {
 		return null;
 	}
 
-	public Member findByName(String name) {
+	public List<Member> findByName(String name) {
+		List<Member> membersFindedByName = new ArrayList<>();
 		for (Member entity : members) {
-			if (entity.getName().equalsIgnoreCase(name)) {
+			if (entity.getName().toUpperCase().contains(name.toUpperCase())) {
+				membersFindedByName.add(entity);
+			}
+		}
+		return membersFindedByName;
+	}
+	
+	public Member findByCardNumber(String cardNumber) {
+		for (Member entity : members) {
+			if (entity.getCardNumber().equalsIgnoreCase(cardNumber)) {
 				return entity;
 			}
 		}
@@ -52,20 +62,6 @@ public class MemberResource {
 	}
 
 	public boolean updateMemberByCardNumber(String cardNumber, Member member) {
-		int count = 0;
-		boolean hasMember = false;
-		for (Member entity : members) {
-			if (entity.getCardNumber().equals(cardNumber)) {
-				members.set(count, member);
-				hasMember = true;
-			}
-			count++;
-		}
-
-		if (hasMember == false) {
-			return hasMember;
-		}
-		
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter(Routes.MEMBER_FILE_PATH))) {
 
 			for (Member entity : members) {
@@ -86,10 +82,9 @@ public class MemberResource {
 				hasMember = true;
 			}
 		}
-		if(hasMember == true) {
+		if (hasMember == true) {
 			members.remove(entity);
-		}
-		else {
+		} else {
 			return hasMember;
 		}
 
@@ -111,7 +106,6 @@ public class MemberResource {
 			String line = reader.readLine();
 
 			while (line != null) {
-				System.out.println(line);
 				Member member = gson.fromJson(line, Member.class);
 
 				list.add(member);
@@ -123,6 +117,16 @@ public class MemberResource {
 			e.printStackTrace();
 		}
 		return list;
+	}
+
+	public boolean verifyIfDocumentAlredyExists(Document document) {
+		for (Member entity : members) {
+			if (entity.getDocument().getType().equals(document.getType())
+					&& entity.getDocument().getValue().equals(document.getValue())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public List<Member> getMembers() {

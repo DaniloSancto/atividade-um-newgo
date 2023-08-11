@@ -2,14 +2,14 @@ package application;
 
 import java.util.Scanner;
 
-import presentation.HomePage;
+import presentation.MemberPage;
 
 public class Program {
 
 	public static void main(String[] args) {
-		HomePage homePage = new HomePage();
+		MemberPage memberPage = new MemberPage();
 		
-		homePage.screenWriter(new Scanner(System.in));
+		memberPage.registerOfMembers(new Scanner(System.in));
 	}
 	
 }

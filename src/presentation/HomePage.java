@@ -5,7 +5,6 @@ import java.util.Scanner;
 import data.util.ClearScreen;
 
 public class HomePage {
-	MemberPage memberPage = new MemberPage();
 
 	public HomePage() {
 		
@@ -20,7 +19,7 @@ public class HomePage {
 			switch (scanner.nextInt()) {
 			case 1:
 				ClearScreen.clear();
-				memberPage.registerOfMembers(scanner);
+				//memberPage.registerOfMembers(scanner);
 				break;
 			}
 		}

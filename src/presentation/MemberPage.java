@@ -1,123 +1,59 @@
 package presentation;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Scanner;
-
-import com.google.gson.Gson;
 
 import data.Member;
 import data.document.Document;
 import data.document.enums.DocumentType;
 import data.util.ClearScreen;
 import data.util.GenerateMemberCardNumber;
+import data.util.Strings;
 import domain.member.MemberResource;
 
 public class MemberPage {
-	
+
 	GenerateMemberCardNumber generateCardNumber = new GenerateMemberCardNumber();
 	MemberResource memberResource = new MemberResource();
 	CreateFolderAndFiles createFolderAndFiles = new CreateFolderAndFiles();
-	
-	Gson gson = new Gson();
-	
+
+	String name, cardNumber;
+	Document document;
+	Member member, updatedMember;
+
 	public MemberPage() {
-		if(!createFolderAndFiles.create()) {
+		if (!createFolderAndFiles.create()) {
 			memberResource.getMembers().addAll(memberResource.getAllMembersFromDocument());
 		}
 	}
-	
+
 	public void registerOfMembers(Scanner scanner) {
 		boolean running = true;
 		while (running) {
-			System.out.println(memberResource.getMembers());
-			System.out.println("\nSELECIONE ALGUMA OPÇÃO\n\n" +
-					"1- Cadastrar novos sócios\n" +
-					"2- Consultar por documento\n" +
-					"3- Consultar por nome\n" +
-					"4- Atualizar um registro por número de carteirinha\n" +
-					"5- Excluir registro por número de carteirinha\n" +
-					"6- Voltar para página inicial\n");
+			System.out.println(Strings.MENU_MEMBER_PAGE);
 
 			switch (scanner.nextInt()) {
 			case 1:
-				System.out.print("Digite o nome do Sócio: ");
-				scanner.nextLine();
-				String name = scanner.nextLine();
-				Document document = getDocumentFromScanner(scanner);
-				if (document == null) {
-					ClearScreen.clear();
-					System.out.println("*ERRO: Documento inválido*");
-					break;
-				}
-				Member member = new Member(generateCardNumber.generate(), name, new Date(), document);
-				ClearScreen.clear();
-				memberResource.insertMember(member);
+				insertMember(scanner);
 				break;
-				
+
 			case 2:
-				document = getDocumentFromScanner(scanner);
-				if (document == null) {
-					ClearScreen.clear();
-					System.out.println("*ERRO: Documento inválido*");
-					break;
-				}
-				ClearScreen.clear();
-				if(memberResource.findByDocument(document) != null) {
-					System.out.println(memberResource.findByDocument(document));
-				}
-				else {
-					System.out.println("*ERRO: Sócio não encontrado*");
-				}
+				findByDocument(scanner);
 				break;
 
 			case 3:
-				System.out.print("Digite o nome do Sócio: ");
-				scanner.nextLine();
-				name = scanner.nextLine();
-				
-				ClearScreen.clear();
-				if(memberResource.findByName(name) != null) {
-					System.out.println(memberResource.findByName(name));
-				}
-				else {
-					System.out.println("*ERRO: Sócio não encontrado*");
-				}
+				findByName(scanner);
 				break;
 
 			case 4:
-				System.out.print("Digite o numero da carteirinha: ");
-				String cardNumber = scanner.next().toUpperCase();
-				System.out.print("Digite o novo nome do Sócio: ");
-				scanner.nextLine();
-				name = scanner.nextLine();
-				document = getDocumentFromScanner(scanner);
-				if (document == null) {
-					ClearScreen.clear();
-					System.out.println("*ERRO: Documento inválido*");
-					break;
-				}
-				Member updatedMember = new Member(cardNumber, name, new Date(), document);
-				ClearScreen.clear();
-				if(memberResource.updateMemberByCardNumber(cardNumber, updatedMember)) {
-					System.out.println("Sócio:" + updatedMember.getName() + " atualizado com sucesso!");
-				}
-				else {
-					System.out.println("*ERRO: Sócio não encontrado*");
-				}
+				updateMember(scanner);
 				break;
 
 			case 5:
-				System.out.print("Digite o numero da carteirinha: ");
-				cardNumber = scanner.next().toUpperCase();
-				ClearScreen.clear();
-				if(memberResource.deleteMemberByCardNumber(cardNumber))	{
-					System.out.println("Sócio: excluído com sucesso!");
-				}
-				else {
-					System.out.println("*ERRO: Sócio não encontrado*");
-				}
+				deleteMember(scanner);
 				break;
-				
+
 			case 6:
 				ClearScreen.clear();
 				running = false;
@@ -125,27 +61,154 @@ public class MemberPage {
 
 			default:
 				ClearScreen.clear();
-				System.out.println("*Valor inválido*");
+				System.out.println(Strings.ERROR_INVALID_VALUE);
 				break;
 			}
 		}
 	}
-	
+
+	private void insertMember(Scanner scanner) {
+		scanner.nextLine();
+		name = getNameFromScanner(scanner);
+		document = verificationToInsertMemberOnDocument(getDocumentFromScanner(scanner), scanner);
+		ClearScreen.clear();
+		if (document != null && name != null && name != "") {
+			member = new Member(generateCardNumber.generate(), name, new Date(), document);
+			memberResource.insertMember(member);
+
+			System.out.println(Strings.MEMBER_SUCCESSFULLY_INSERTED);
+		} else {
+			System.out.println(Strings.ERROR_TO_INSERT_MEMBER);
+		}
+	}
+
+	private void findByDocument(Scanner scanner) {
+		document = getDocumentFromScanner(scanner);
+		ClearScreen.clear();
+		if (memberResource.findByDocument(document) != null) {
+			System.out.println(memberResource.findByDocument(document));
+		} else {
+			System.out.println(Strings.ERROR_MEMBER_NOT_FOUND);
+		}
+	}
+
+	private void findByName(Scanner scanner) {
+		System.out.print(Strings.WRITE_MEMBER_NAME);
+		scanner.nextLine();
+		name = scanner.nextLine();
+		List<Member> membersFinded = memberResource.findByName(name);
+
+		ClearScreen.clear();
+		if (!membersFinded.isEmpty()) {
+			System.out.println(Strings.MEMBERS_FINDED + membersFinded.size());
+			membersFinded.forEach(System.out::println);
+		} else {
+			System.out.println(Strings.ERROR_MEMBER_NOT_FOUND);
+		}
+	}
+
+	private void updateMember(Scanner scanner) {
+		System.out.print(Strings.WRITE_CARD_NUMBER);
+		Member memberToBeUpdated = memberResource.findByCardNumber(scanner.next().toUpperCase());
+
+		if (memberToBeUpdated != null) {
+			scanner.nextLine();
+			name = getNameFromScanner(scanner);
+
+			ClearScreen.clear();
+			if (name != null && name != "") {
+
+				updatedMember = new Member(cardNumber, name, new Date(), memberToBeUpdated.getDocument());
+
+				if (memberResource.updateMemberByCardNumber(cardNumber, updatedMember)) {
+					System.out.println(Strings.updatedMember(updatedMember.getName()));
+				}
+			} else {
+				System.out.println(Strings.ERROR_MEMBER_NOT_FOUND);
+			}
+		} else {
+			ClearScreen.clear();
+			System.out.println(Strings.ERROR_MEMBER_NOT_FOUND);
+		}
+
+	}
+
+	private void deleteMember(Scanner scanner) {
+		System.out.print(Strings.WRITE_CARD_NUMBER);
+		cardNumber = scanner.next().toUpperCase();
+		ClearScreen.clear();
+		if (memberResource.deleteMemberByCardNumber(cardNumber)) {
+			System.out.println(Strings.MEMBER_SUCCESSFULLY_DELETED);
+		} else {
+			System.out.println(Strings.ERROR_MEMBER_NOT_FOUND);
+		}
+	}
+
+	private String getNameFromScanner(Scanner scanner) {
+		boolean isSpelledRight = false;
+		while (isSpelledRight == false) {
+			System.out.print(Strings.WRITE_MEMBER_NAME);
+			String localName = scanner.nextLine();
+			if (localName.matches("[\\p{L}\\s]+") && localName.trim() != "") {
+				isSpelledRight = true;
+				return localName.trim();
+			} else {
+				ClearScreen.clear();
+				System.out.println(Strings.ERROR_INVALID_NAME);
+			}
+		}
+		return null;
+	}
+
+	private Document verificationToInsertMemberOnDocument(Document document, Scanner scanner) {
+		Document documentToInsert = document;
+		if (memberResource.verifyIfDocumentAlredyExists(documentToInsert) == false) {
+			return documentToInsert;
+		} else {
+			System.out.println(Strings.ERROR_DOCUMENT_ALREDY_EXISTS);
+			System.out.println(Strings.MENU_DOCUMENT_ALREDY_EXISTS);
+			switch (scanner.nextInt()) {
+			case 1:
+				return getDocumentFromScanner(scanner);
+			case 2:
+				break;
+			default:
+				System.out.println(Strings.ERROR_INVALID_VALUE);
+				break;
+			}
+		}
+		return null;
+	}
+
 	private Document getDocumentFromScanner(Scanner scanner) {
-		System.out.print("Digite o tipo de documento(RG/CPF): ");
-		String documentType = scanner.next().toUpperCase();
-		System.out.print("Digite o numero do " + documentType + "(somente números): ");
-		String documentValue = scanner.next();
-		Document document;
-		if (documentType.equals("RG")) {
-			document = new Document(DocumentType.RG, documentValue);
+		DocumentType documentType = null;
+		String documentValue = null;
+		boolean isSpelledRight = false;
+		while (isSpelledRight == false) {
+			System.out.print(Strings.WRITE_DOCUMENT_TYPE);
+			String typeFromScanner = scanner.next().toUpperCase();
+			if (typeFromScanner.equals("RG") || typeFromScanner.equals("CPF")) {
+				documentType = DocumentType.valueOf(typeFromScanner);
+				isSpelledRight = true;
+			} else {
+				System.out.println(Strings.ERROR_INVALID_VALUE);
+			}
 		}
-		else if(documentType.equals("CPF")) {
-			document = new Document(DocumentType.CPF, documentValue);
+		isSpelledRight = false;
+		while (isSpelledRight == false) {
+			System.out.print(Strings.writeDocumentValue(documentType.toString()));
+			documentValue = scanner.next();
+			if (documentValue.matches("[+-]?\\d*(\\.\\d+)?")) {
+				isSpelledRight = true;
+			} else {
+				System.out.println(Strings.ERROR_INVALID_VALUE);
+			}
 		}
-		else {
+
+		if (documentType != null || documentValue != null) {
+			return new Document(documentType, documentValue);
+		} else {
 			return null;
 		}
-		return document;
 	}
 }
