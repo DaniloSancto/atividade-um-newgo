@@ -5,7 +5,7 @@ public class Strings {
 	public static final String MENU_MEMBER_PAGE = "\nSELECIONE ALGUMA OPÇÃO\n\n" + "1- Cadastrar novos sócios\n"
 			+ "2- Consultar por documento\n" + "3- Consultar por nome\n"
 			+ "4- Atualizar um registro por número de carteirinha\n" + "5- Excluir registro por número de carteirinha\n"
-			+ "6- Voltar para página inicial\n";
+			+ "6- Consultar todos Sócios\n" + "7- Voltar para página inicial\n";
 	
 	public static final String MENU_DOCUMENT_ALREDY_EXISTS = "\n1- inserir um novo documento\n2- voltar para as opções";
 	

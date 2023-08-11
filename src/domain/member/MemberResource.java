@@ -51,7 +51,7 @@ public class MemberResource {
 		}
 		return membersFindedByName;
 	}
-	
+
 	public Member findByCardNumber(String cardNumber) {
 		for (Member entity : members) {
 			if (entity.getCardNumber().equalsIgnoreCase(cardNumber)) {
@@ -62,10 +62,24 @@ public class MemberResource {
 	}
 
 	public boolean updateMemberByCardNumber(String cardNumber, Member member) {
+		int count = 0;
+		boolean hasMember = false;
+		for (Member entity : members) {
+			if (entity.getCardNumber().equals(cardNumber)) {
+				members.set(count, member);
+				hasMember = true;
+			}
+			count++;
+		}
+		if (hasMember == false) {
+			return hasMember;
+		}
+
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter(Routes.MEMBER_FILE_PATH))) {
 
 			for (Member entity : members) {
-				writer.write(entity + "\n");
+				writer.write(gson.toJson(entity));
+				writer.newLine();
 			}
 		} catch (IOException e) {
 			System.out.println("Error writing file: " + e.getMessage());
@@ -91,7 +105,8 @@ public class MemberResource {
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter(Routes.MEMBER_FILE_PATH))) {
 
 			for (Member member : members) {
-				writer.write(member + "\n");
+				writer.write(gson.toJson(member));
+				writer.newLine();
 			}
 		} catch (IOException e) {
 			System.out.println("Error writing file: " + e.getMessage());

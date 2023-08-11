@@ -53,8 +53,11 @@ public class MemberPage {
 			case 5:
 				deleteMember(scanner);
 				break;
-
 			case 6:
+				ClearScreen.clear();
+				findAll();
+				break;
+			case 7:
 				ClearScreen.clear();
 				running = false;
 				break;
@@ -108,29 +111,20 @@ public class MemberPage {
 	}
 
 	private void updateMember(Scanner scanner) {
+
 		System.out.print(Strings.WRITE_CARD_NUMBER);
-		Member memberToBeUpdated = memberResource.findByCardNumber(scanner.next().toUpperCase());
+		cardNumber = scanner.next().toUpperCase();
+		scanner.nextLine();
+		name = getNameFromScanner(scanner);
+		document = getDocumentFromScanner(scanner);
 
-		if (memberToBeUpdated != null) {
-			scanner.nextLine();
-			name = getNameFromScanner(scanner);
-
-			ClearScreen.clear();
-			if (name != null && name != "") {
-
-				updatedMember = new Member(cardNumber, name, new Date(), memberToBeUpdated.getDocument());
-
-				if (memberResource.updateMemberByCardNumber(cardNumber, updatedMember)) {
-					System.out.println(Strings.updatedMember(updatedMember.getName()));
-				}
-			} else {
-				System.out.println(Strings.ERROR_MEMBER_NOT_FOUND);
-			}
+		Member updatedMember = new Member(cardNumber, name, new Date(), document);
+		ClearScreen.clear();
+		if (memberResource.updateMemberByCardNumber(cardNumber, updatedMember)) {
+			System.out.println(Strings.updatedMember(updatedMember.getName()));
 		} else {
-			ClearScreen.clear();
 			System.out.println(Strings.ERROR_MEMBER_NOT_FOUND);
 		}
-
 	}
 
 	private void deleteMember(Scanner scanner) {
@@ -139,6 +133,15 @@ public class MemberPage {
 		ClearScreen.clear();
 		if (memberResource.deleteMemberByCardNumber(cardNumber)) {
 			System.out.println(Strings.MEMBER_SUCCESSFULLY_DELETED);
+		} else {
+			System.out.println(Strings.ERROR_MEMBER_NOT_FOUND);
+		}
+	}
+
+	private void findAll() {
+		if (memberResource.getMembers().size() != 0) {
+			System.out.println(Strings.MEMBERS_FINDED + memberResource.getMembers().size());
+			memberResource.getMembers().forEach(System.out::println);
 		} else {
 			System.out.println(Strings.ERROR_MEMBER_NOT_FOUND);
 		}
