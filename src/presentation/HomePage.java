@@ -2,7 +2,7 @@ package presentation;
 
 import java.util.Scanner;
 
-import data.util.ClearScreen;
+import presentation.util.ClearScreen;
 
 public class HomePage {
 

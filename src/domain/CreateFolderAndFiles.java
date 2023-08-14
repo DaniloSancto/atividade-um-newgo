@@ -1,9 +1,9 @@
-package presentation;
+package domain;
 
 import java.io.File;
 import java.io.IOException;
 
-import data.util.Routes;
+import domain.util.Routes;
 
 public class CreateFolderAndFiles {
 	
@@ -18,6 +18,7 @@ public class CreateFolderAndFiles {
 			try {
 				file.createNewFile();
 			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
 		else {

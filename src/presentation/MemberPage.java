@@ -7,10 +7,11 @@ import java.util.Scanner;
 import data.Member;
 import data.document.Document;
 import data.document.enums.DocumentType;
-import data.util.ClearScreen;
-import data.util.GenerateMemberCardNumber;
-import data.util.Strings;
+import presentation.util.ClearScreen;
+import domain.CreateFolderAndFiles;
 import domain.member.MemberResource;
+import presentation.util.GenerateMemberCardNumber;
+import presentation.util.Strings;
 
 public class MemberPage {
 
@@ -111,17 +112,21 @@ public class MemberPage {
 	}
 
 	private void updateMember(Scanner scanner) {
-
 		System.out.print(Strings.WRITE_CARD_NUMBER);
 		cardNumber = scanner.next().toUpperCase();
-		scanner.nextLine();
-		name = getNameFromScanner(scanner);
-		document = getDocumentFromScanner(scanner);
+		if (memberResource.findByCardNumber(cardNumber) != null) {
+			System.out.println(Strings.DATA_TO_NEW_MEMBER);
+			scanner.nextLine();
+			name = getNameFromScanner(scanner);
+			document = getDocumentFromScanner(scanner);
 
-		Member updatedMember = new Member(cardNumber, name, new Date(), document);
-		ClearScreen.clear();
-		if (memberResource.updateMemberByCardNumber(cardNumber, updatedMember)) {
-			System.out.println(Strings.updatedMember(updatedMember.getName()));
+			Member updatedMember = new Member(cardNumber, name, new Date(), document);
+			ClearScreen.clear();
+			if (memberResource.updateMemberByCardNumber(cardNumber, updatedMember)) {
+				System.out.println(Strings.updatedMember(updatedMember.getName()));
+			} else {
+				System.out.println(Strings.ERROR_TO_UPDATE_MEMBER);
+			}
 		} else {
 			System.out.println(Strings.ERROR_MEMBER_NOT_FOUND);
 		}

@@ -12,7 +12,7 @@ import com.google.gson.Gson;
 
 import data.Member;
 import data.document.Document;
-import data.util.Routes;
+import domain.util.Routes;
 
 public class MemberResource {
 
